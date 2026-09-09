@@ -5,6 +5,16 @@ import os
 
 class SalesDatabase:
 
+    INDEXES = {
+    'orders':           ['order_id', 'customer_id'],
+    'customers':        ['customer_id'],
+    'products':         ['product_id'],
+    'order_items':      ['order_id', 'product_id', 'seller_id'],
+    'order_payments':   ['order_id'],
+    'order_reviews':    ['order_id'],
+    'sellers':          ['seller_id']
+    }
+
     def __init__(self):
         self.project_root = Path(__file__).resolve().parent.parent
         self.db_dir = self.project_root / 'data' / 'database'
@@ -34,7 +44,7 @@ class SalesDatabase:
                 df = pd.read_sql_query(query, self.connection)
             return df
         except Exception as e:
-            print("Erro ao executar query!")
+            print(f"Erro ao executar query: {e}")
             return None
 
     def execute_many(self, query, params_list):
@@ -57,8 +67,18 @@ class SalesDatabase:
         for table_name, df in dataframe_dict.items():
             df.to_sql(table_name, self.connection,
                       if_exists='replace',
-                      index=False) 
-        print(f"Tabela {table_name} criada com {len(df)} registros")
+                      index=False)
+            print(f"Tabela {table_name} criada com {len(df)} registros")
+
+    def create_indexes(self, indexes=INDEXES):
+        if not self.connection:
+            self.connect()
+            
+            for table_name, columns in indexes.items():
+                for col in columns:
+                    self.connection.execute(
+                        f"CREATE INDEX IF NOT EXISTS idx_{table_name}_{col} ON {table_name}({col})"
+                    )
 
     def load_csv_to_db(self, csv_path, table_name):
         if not self.connection:
