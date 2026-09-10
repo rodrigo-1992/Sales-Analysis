@@ -10,7 +10,7 @@ class SalesDatabase:
     'customers':        ['customer_id'],
     'products':         ['product_id'],
     'order_items':      ['order_id', 'product_id', 'seller_id'],
-    'order_payments':   ['order_id'],
+    'orders_payments':  ['order_id'],
     'order_reviews':    ['order_id'],
     'sellers':          ['seller_id']
     }
@@ -74,10 +74,10 @@ class SalesDatabase:
         if not self.connection:
             self.connect()
             
-        for table_name, columns in indexes.items():
+        for table, columns in indexes.items():
             for col in columns:
                 self.connection.execute(
-                    f"CREATE INDEX IF NOT EXISTS idx_{table_name}_{col} ON {table_name}({col})"
+                    f"CREATE INDEX IF NOT EXISTS idx_{table}_{col} ON {table}({col})"
                 )
 
     def load_csv_to_db(self, csv_path, table_name):
