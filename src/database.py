@@ -74,11 +74,11 @@ class SalesDatabase:
         if not self.connection:
             self.connect()
             
-            for table_name, columns in indexes.items():
-                for col in columns:
-                    self.connection.execute(
-                        f"CREATE INDEX IF NOT EXISTS idx_{table_name}_{col} ON {table_name}({col})"
-                    )
+        for table_name, columns in indexes.items():
+            for col in columns:
+                self.connection.execute(
+                    f"CREATE INDEX IF NOT EXISTS idx_{table_name}_{col} ON {table_name}({col})"
+                )
 
     def load_csv_to_db(self, csv_path, table_name):
         if not self.connection:
