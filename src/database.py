@@ -6,13 +6,15 @@ import os
 class SalesDatabase:
 
     INDEXES = {
-    'orders':           ['order_id', 'customer_id'],
-    'customers':        ['customer_id'],
-    'products':         ['product_id'],
-    'order_items':      ['order_id', 'product_id', 'seller_id'],
-    'orders_payments':  ['order_id'],
-    'order_reviews':    ['order_id'],
-    'sellers':          ['seller_id']
+    'orders':               ['order_id', 'customer_id'],
+    'customers':            ['customer_id'],
+    'products':             ['product_id'],
+    'order_items':          ['order_id', 'product_id', 'seller_id'],
+    'order_payments':       ['order_id'],
+    'order_reviews':        ['order_id'],
+    'sellers':              ['seller_id'],
+    'geolocation':          ['geolocation_zip_code_prefix'],
+    'category_translation': ['product_category_name']
     }
 
     def __init__(self):
@@ -73,8 +75,16 @@ class SalesDatabase:
     def create_indexes(self, indexes=INDEXES):
         if not self.connection:
             self.connect()
-            
+
+        existentes = {
+            row[0] for row in self.connection.execute(
+                "SELECT name FROM sqlite_master WHERE type='table'"
+            )
+        }
+
         for table, columns in indexes.items():
+            if table not in existentes:
+                continue
             for col in columns:
                 self.connection.execute(
                     f"CREATE INDEX IF NOT EXISTS idx_{table}_{col} ON {table}({col})"

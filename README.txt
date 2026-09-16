@@ -66,3 +66,10 @@ jupyter notebook
 **Notas adicionais:**
 - Certifique-se de estar no diretório correto do projeto antes de rodar os comandos.
 - Para o dashboard, abra o arquivo `dashboard.pbix` (Power BI).
+- Guia passo a passo para montar o dashboard no Power BI: `docs/FASE_D_guia_dashboard_power_bi.md`.
+
+### Observações sobre os dados
+
+- A pasta `data/` está no `.gitignore` e **não é versionada** no GitHub. Os CSVs limpos (`data/processed/*_clean.csv`), o banco SQLite (`data/database/sales_analysis.db`) e os resultados das consultas (`data/processed/resultados/*.csv`) são gerados localmente ao executar os notebooks `03`, `04`, `05` e `06`.
+- Para reproduzir a análise em outra máquina: baixe os arquivos do dataset Olist (Kaggle) em `data/raw/` e execute os notebooks em ordem.
+- O dashboard do Power BI é alimentado pelos arquivos locais de `data/processed/` (o `dashboard.pbix` deve ser aberto em uma máquina onde esses arquivos existam).
